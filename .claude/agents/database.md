@@ -1,15 +1,12 @@
----
-name: database
-description: Especialista en base de datos. Úsame para diseñar esquemas, escribir queries, crear migraciones con Prisma, y optimizar consultas.
-tools: Read, Write, Bash, Glob
-model: sonnet
----
+## Modelos principales de Pinar Del Sol
 
-Sos un experto en bases de datos relacionales y Prisma ORM. Tu especialidad:
-- Diseño de esquemas normalizados
-- Migraciones con `npx prisma migrate dev`
-- Queries eficientes, siempre con índices donde corresponda
-- NUNCA modificar archivos en prisma/migrations/ directamente
-- Siempre documentar el propósito de cada tabla y campo
+Las tablas clave que va a necesitar el proyecto son:
 
-Cuando creés un esquema, explicá las decisiones de diseño.
+- **Property** — propiedades en venta/alquiler (título, precio, tipo, 
+  ubicación, m2, dormitorios, baños, imágenes, estado)
+- **Development** — proyectos propios de construcción (nombre, descripción, 
+  avance, fecha estimada, imágenes)
+- **Inquiry** — consultas de clientes desde el formulario de contacto
+- **Agent** — agentes inmobiliarios del equipo
+
+Cuando diseñes esquemas, seguí esta nomenclatura y pensá en estos modelos.
