@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { Footer } from '../components/Footer'
 import { LoteCard } from '../components/LoteCard'
 import { CasaCard } from '../components/CasaCard'
+import { PrecioFilter } from '../components/PrecioFilter'
 
 type TipoFiltro = '' | 'lote' | 'casa'
 
@@ -44,14 +45,20 @@ const propiedades: Propiedad[] = [
 const barrios = ['Pinar 1', 'Pinar 2', 'Pinar 3']
 
 export function PropiedadesPage() {
-  const [tipoFiltro, setTipoFiltro]   = useState<TipoFiltro>('')
+  const [tipoFiltro, setTipoFiltro]     = useState<TipoFiltro>('')
   const [barrioFiltro, setBarrioFiltro] = useState<string>('')
+  const [precioDesde, setPrecioDesde]   = useState<number | null>(null)
+  const [precioHasta, setPrecioHasta]   = useState<number | null>(null)
 
   const filtradas = propiedades.filter((p) => {
     if (tipoFiltro && p.tipo !== tipoFiltro) return false
     if (barrioFiltro && p.barrio !== barrioFiltro) return false
+    if (precioDesde !== null && p.precio < precioDesde) return false
+    if (precioHasta !== null && p.precio > precioHasta) return false
     return true
   })
+
+  const precioFiltroActivo = precioDesde !== null || precioHasta !== null
 
   const totalLotes = propiedades.filter((p) => p.tipo === 'lote').length
   const totalCasas = propiedades.filter((p) => p.tipo === 'casa').length
@@ -78,8 +85,14 @@ export function PropiedadesPage() {
               </p>
             </div>
 
-            {/* Controles de filtro + botón admin */}
+            {/* Controles de filtro */}
             <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              {/* Filtro de precio */}
+              <PrecioFilter
+                active={precioFiltroActivo}
+                onApply={(desde, hasta) => { setPrecioDesde(desde); setPrecioHasta(hasta) }}
+              />
+
               {/* Filtro por tipo */}
               <div className="relative">
                 <select

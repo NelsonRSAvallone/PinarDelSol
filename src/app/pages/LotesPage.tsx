@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { Footer } from '../components/Footer'
 import { LoteCard } from '../components/LoteCard'
+import { PrecioFilter } from '../components/PrecioFilter'
 
 interface Lote {
   id: number
@@ -29,10 +30,17 @@ function calcularSuperficiePromedio(items: Lote[]): number {
 
 export function LotesPage() {
   const [barrioSeleccionado, setBarrioSeleccionado] = useState<string>('')
+  const [precioDesde, setPrecioDesde] = useState<number | null>(null)
+  const [precioHasta, setPrecioHasta] = useState<number | null>(null)
 
-  const lotesFiltrados = barrioSeleccionado
-    ? lotes.filter((l) => l.barrio === barrioSeleccionado)
-    : lotes
+  const lotesFiltrados = lotes.filter((l) => {
+    if (barrioSeleccionado && l.barrio !== barrioSeleccionado) return false
+    if (precioDesde !== null && l.precio < precioDesde) return false
+    if (precioHasta !== null && l.precio > precioHasta) return false
+    return true
+  })
+
+  const precioFiltroActivo = precioDesde !== null || precioHasta !== null
 
   const superficiePromedio = calcularSuperficiePromedio(lotes)
 
@@ -58,8 +66,14 @@ export function LotesPage() {
               </p>
             </div>
 
-            {/* Controles de la derecha: filtro + botón admin */}
+            {/* Controles de la derecha: filtros + botón admin */}
             <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              {/* Filtro de precio */}
+              <PrecioFilter
+                active={precioFiltroActivo}
+                onApply={(desde, hasta) => { setPrecioDesde(desde); setPrecioHasta(hasta) }}
+              />
+
               {/* DropDown de filtro por barrio */}
               <div className="relative">
                 <select

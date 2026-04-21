@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Navbar } from '../components/Navbar'
 import { Footer } from '../components/Footer'
 import { CasaCard } from '../components/CasaCard'
+import { PrecioFilter } from '../components/PrecioFilter'
 
 interface Casa {
   id: number
@@ -30,10 +31,17 @@ function formatPrecioCorto(precio: number): string {
 
 export function CasasPage() {
   const [barrioSeleccionado, setBarrioSeleccionado] = useState<string>('')
+  const [precioDesde, setPrecioDesde] = useState<number | null>(null)
+  const [precioHasta, setPrecioHasta] = useState<number | null>(null)
 
-  const casasFiltradas = barrioSeleccionado
-    ? casas.filter((c) => c.barrio === barrioSeleccionado)
-    : casas
+  const casasFiltradas = casas.filter((c) => {
+    if (barrioSeleccionado && c.barrio !== barrioSeleccionado) return false
+    if (precioDesde !== null && c.precio < precioDesde) return false
+    if (precioHasta !== null && c.precio > precioHasta) return false
+    return true
+  })
+
+  const precioFiltroActivo = precioDesde !== null || precioHasta !== null
 
   const precioMin = Math.min(...casas.map((c) => c.precio))
   const precioMax = Math.max(...casas.map((c) => c.precio))
@@ -61,8 +69,14 @@ export function CasasPage() {
               </p>
             </div>
 
-            {/* Controles de la derecha: filtro + botón admin */}
+            {/* Controles de la derecha: filtros + botón admin */}
             <div className="shrink-0 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              {/* Filtro de precio */}
+              <PrecioFilter
+                active={precioFiltroActivo}
+                onApply={(desde, hasta) => { setPrecioDesde(desde); setPrecioHasta(hasta) }}
+              />
+
               {/* DropDown de filtro por barrio */}
               <div className="relative">
                 <select
