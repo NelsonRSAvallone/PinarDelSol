@@ -3,6 +3,7 @@ import { Navbar } from '../components/Navbar'
 import { Footer } from '../components/Footer'
 import { CasaCard } from '../components/CasaCard'
 import { PrecioFilter } from '../components/PrecioFilter'
+import { NuevaPropiedadModal } from '../components/NuevaPropiedadModal'
 
 interface Casa {
   id: number
@@ -33,6 +34,7 @@ export function CasasPage() {
   const [barrioSeleccionado, setBarrioSeleccionado] = useState<string>('')
   const [precioDesde, setPrecioDesde] = useState<number | null>(null)
   const [precioHasta, setPrecioHasta] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const casasFiltradas = casas.filter((c) => {
     if (barrioSeleccionado && c.barrio !== barrioSeleccionado) return false
@@ -99,13 +101,14 @@ export function CasasPage() {
 
               {/* Botón admin — en el futuro solo visible para administradores */}
               <button
+                onClick={() => setModalOpen(true)}
                 className="inline-flex items-center justify-center gap-3 border border-gold-400 text-gold-400 hover:bg-gold-400 hover:text-obsidian-900 text-sm tracking-widest uppercase px-6 py-3 transition-all duration-300 font-medium group"
-                aria-label="Crear nueva casa"
+                aria-label="Crear nueva propiedad"
               >
                 <svg className="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
-                Nueva Casa
+                Nueva Propiedad
               </button>
             </div>
           </div>
@@ -158,6 +161,12 @@ export function CasasPage() {
       </section>
 
       <Footer />
+
+      <NuevaPropiedadModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        tipoInicial="casa"
+      />
     </div>
   )
 }
