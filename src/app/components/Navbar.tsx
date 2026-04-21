@@ -54,11 +54,14 @@ export function Navbar() {
 
   const linkClasses = (to: string) => {
     const isActive = location.pathname === to
-    return `text-sm tracking-wider uppercase transition-colors duration-300 relative group ${
-      isActive
-        ? 'text-gold-500 dark:text-gold-400'
-        : 'text-obsidian-600 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400'
-    }`
+    // Cuando no hay scroll, el navbar es transparente sobre el carousel (siempre oscuro)
+    // → texto siempre blanco. Cuando hay scroll, se aplican colores según el tema.
+    const textColor = isActive
+      ? 'text-gold-500'
+      : scrolled
+        ? 'text-obsidian-600 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400'
+        : 'text-marble-100 hover:text-gold-400'
+    return `text-sm tracking-wider uppercase transition-colors duration-300 relative group ${textColor}`
   }
 
   const underline = 'absolute -bottom-1 left-0 h-px bg-gold-400 transition-all duration-300 group-hover:w-full'
@@ -78,7 +81,7 @@ export function Navbar() {
             <span className="text-gold-400 font-serif font-bold text-sm -rotate-45 group-hover:rotate-0 duration-500">PS</span>
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-serif text-lg tracking-widest text-obsidian-900 dark:text-white">
+            <span className={`font-serif text-lg tracking-widest transition-colors duration-500 ${scrolled ? 'text-obsidian-900 dark:text-white' : 'text-white'}`}>
               PINAR DEL SOL
             </span>
             <span className="text-gold-400 text-[10px] tracking-[0.3em] uppercase">Inmobiliaria & Desarrollos</span>

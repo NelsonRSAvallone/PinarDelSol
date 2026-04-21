@@ -1,13 +1,16 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import { ThemeProvider } from '../app/context/ThemeContext'
 import { Navbar } from '../app/components/Navbar'
 
 function renderNavbar() {
   return render(
-    <ThemeProvider>
-      <Navbar />
-    </ThemeProvider>
+    <MemoryRouter>
+      <ThemeProvider>
+        <Navbar />
+      </ThemeProvider>
+    </MemoryRouter>
   )
 }
 
