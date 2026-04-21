@@ -1,13 +1,20 @@
 import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
 
-const navLinks = [
-  { label: 'Inicio', href: '#inicio' },
-  { label: 'Barrios', href: '#barrios' },
-  { label: 'Lotes', href: '#lotes' },
-  { label: 'Casas', href: '#casas' },
-  { label: 'Nosotros', href: '#nosotros' },
-  { label: 'Contacto', href: '#contacto' },
+interface NavItem {
+  label: string
+  to: string        // ruta React Router (/barrios) o anchor del home (#inicio)
+  isPage: boolean   // true = navega a una página, false = anchor en el home
+}
+
+const navLinks: NavItem[] = [
+  { label: 'Inicio',   to: '/',         isPage: true  },
+  { label: 'Barrios',  to: '/barrios',  isPage: true  },
+  { label: 'Lotes',    to: '#lotes',    isPage: false },
+  { label: 'Casas',    to: '#casas',    isPage: false },
+  { label: 'Nosotros', to: '#nosotros', isPage: false },
+  { label: 'Contacto', to: '#contacto', isPage: false },
 ]
 
 function SunIcon() {
@@ -31,6 +38,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { theme, toggleTheme } = useTheme()
+  const location = useLocation()
   const isDark = theme === 'dark'
 
   useEffect(() => {
@@ -38,6 +46,22 @@ export function Navbar() {
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // Cierra el menú mobile al cambiar de ruta
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
+
+  const linkClasses = (to: string) => {
+    const isActive = location.pathname === to
+    return `text-sm tracking-wider uppercase transition-colors duration-300 relative group ${
+      isActive
+        ? 'text-gold-500 dark:text-gold-400'
+        : 'text-obsidian-600 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400'
+    }`
+  }
+
+  const underline = 'absolute -bottom-1 left-0 h-px bg-gold-400 transition-all duration-300 group-hover:w-full'
 
   return (
     <header
@@ -49,7 +73,7 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo */}
-        <a href="#inicio" className="flex items-center gap-3 group">
+        <Link to="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 border border-gold-400 rotate-45 flex items-center justify-center transition-transform group-hover:rotate-0 duration-500">
             <span className="text-gold-400 font-serif font-bold text-sm -rotate-45 group-hover:rotate-0 duration-500">PS</span>
           </div>
@@ -59,20 +83,23 @@ export function Navbar() {
             </span>
             <span className="text-gold-400 text-[10px] tracking-[0.3em] uppercase">Inmobiliaria & Desarrollos</span>
           </div>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-obsidian-600 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400 text-sm tracking-wider uppercase transition-colors duration-300 relative group"
-            >
-              {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-400 transition-all duration-300 group-hover:w-full" />
-            </a>
-          ))}
+          {navLinks.map((item) =>
+            item.isPage ? (
+              <Link key={item.to} to={item.to} className={linkClasses(item.to)}>
+                {item.label}
+                <span className={`${underline} ${location.pathname === item.to ? 'w-full' : 'w-0'}`} />
+              </Link>
+            ) : (
+              <a key={item.to} href={item.to} className={linkClasses('')}>
+                {item.label}
+                <span className={`${underline} w-0`} />
+              </a>
+            )
+          )}
         </nav>
 
         {/* Right side: theme toggle + CTA + hamburger */}
@@ -116,16 +143,25 @@ export function Navbar() {
       {/* Mobile menu */}
       <div className={`md:hidden overflow-hidden transition-all duration-500 ${menuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
         <nav className="backdrop-blur-md px-6 py-4 flex flex-col gap-4 border-t border-gold-400/20 bg-marble-100/95 dark:bg-obsidian-800/95">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="text-obsidian-700 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400 text-sm tracking-wider uppercase transition-colors duration-300 py-1"
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((item) =>
+            item.isPage ? (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="text-obsidian-700 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400 text-sm tracking-wider uppercase transition-colors duration-300 py-1"
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                key={item.to}
+                href={item.to}
+                className="text-obsidian-700 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400 text-sm tracking-wider uppercase transition-colors duration-300 py-1"
+              >
+                {item.label}
+              </a>
+            )
+          )}
         </nav>
       </div>
     </header>

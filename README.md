@@ -6,6 +6,37 @@ Sitio web para **Pinar Del Sol**, inmobiliaria y desarrolladora de propiedades. 
 
 ## Historial de cambios
 
+### [pendiente] Página de Barrios + React Router
+**Fecha:** 21 de abril de 2026
+
+Se incorporó navegación multi-página con React Router y se creó la primera página secundaria: el listado de Barrios.
+
+**Dependencia instalada:**
+- `react-router-dom` — enrutamiento del lado del cliente.
+
+**Archivos creados:**
+- `src/app/pages/BarriosPage.tsx` — Página completa de barrios con header, stats rápidas (total de barrios, lotes y ubicación), grid de cards y botón "Nuevo Barrio" (acción de administrador).
+- `src/app/components/BarrioCard.tsx` — Card por barrio con: número decorativo, badge "Barrio", nombre en serif, ubicación con ícono de pin, cantidad de lotes disponibles, franja dorada animada al hover y link "Ver barrio".
+
+**Archivos modificados:**
+- `src/App.tsx` — Incorpora `HashRouter` con rutas: `/` (HomePage) y `/barrios` (BarriosPage). Se usa `HashRouter` (URLs tipo `/#/barrios`) para compatibilidad total con GitHub Pages estático sin configuración de servidor.
+- `src/app/components/Navbar.tsx` — Links de página usan `Link` de React Router con estado activo (subrayado dorado cuando la ruta coincide). Links de secciones del home mantienen `href` con anchor. El logo navega con `Link`. El menú mobile se cierra automáticamente al cambiar de ruta.
+
+**Datos hardcodeados (temporales):**
+
+| Barrio | Ubicación | Lotes |
+|---|---|---|
+| Pinar 1 | Maipú | 48 |
+| Pinar 2 | Maipú | 64 |
+| Pinar 3 | Maipú | 80 |
+
+**Deploy:**
+- `vite.config.ts` — `outDir: 'docs'` y `base: '/PinarDelSol/'` para que GitHub Pages sirva el build desde la carpeta `docs/` de la rama `main`.
+- `docs/` — Carpeta de build commiteada al repo. Se regenera con `npm run build` antes de cada push que deba reflejarse en producción.
+- `.gitignore` — Se agregó `dist/` para que la carpeta de build local anterior no se trackee.
+
+---
+
 ### [cc28f82] Página Principal con dark/light mode
 **Fecha:** 20 de abril de 2026
 
@@ -92,9 +123,10 @@ npm run lint       # linter
 
 ## Próximos pasos planeados
 
-- Sección de Barrios con cards y filtros
-- Sección de Lotes en venta
+- Página de detalle de barrio (`/barrios/:id`)
+- Sección de Lotes en venta por barrio
 - Sección de Casas y desarrollos propios
 - Página de detalle de propiedad
 - Formulario de contacto funcional
+- Sistema de autenticación para el panel de administrador
 - Base de datos PostgreSQL con Prisma
