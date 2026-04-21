@@ -2,22 +2,29 @@ import { useState, useEffect, useRef } from 'react'
 
 type TipoPropiedad = '' | 'lote' | 'casa'
 
+// TODO: reemplazar con fetch a la base de datos cuando esté disponible
+const BARRIOS = ['Pinar 1', 'Pinar 2', 'Pinar 3']
+
 interface FormState {
   tipo: TipoPropiedad
   nombre: string
+  barrio: string
   metrosLote: string
   metrosCubiertos: string
   piezas: string
   banos: string
+  precio: string
 }
 
 const initialForm: FormState = {
   tipo: '',
   nombre: '',
+  barrio: '',
   metrosLote: '',
   metrosCubiertos: '',
   piezas: '',
   banos: '',
+  precio: '',
 }
 
 interface NuevaPropiedadModalProps {
@@ -69,14 +76,16 @@ export function NuevaPropiedadModal({ open, onClose, tipoInicial = '' }: NuevaPr
 
   const validar = (): boolean => {
     const e: Partial<Record<keyof FormState, string>> = {}
-    if (!form.tipo)    e.tipo   = 'Seleccioná el tipo de propiedad.'
-    if (!form.nombre.trim()) e.nombre = 'El nombre es obligatorio.'
+    if (!form.tipo)          e.tipo    = 'Seleccioná el tipo de propiedad.'
+    if (!form.nombre.trim()) e.nombre  = 'El nombre es obligatorio.'
+    if (!form.barrio)        e.barrio  = 'Seleccioná el barrio.'
     if (!form.metrosLote)    e.metrosLote = 'Ingresá los metros del lote.'
     if (form.tipo === 'casa') {
       if (!form.metrosCubiertos) e.metrosCubiertos = 'Ingresá los metros cubiertos.'
       if (!form.piezas)          e.piezas          = 'Seleccioná la cantidad de piezas.'
       if (!form.banos)           e.banos           = 'Seleccioná la cantidad de baños.'
     }
+    if (!form.precio)        e.precio  = 'Ingresá el precio.'
     setErrores(e)
     return Object.keys(e).length === 0
   }
@@ -164,6 +173,32 @@ export function NuevaPropiedadModal({ open, onClose, tipoInicial = '' }: NuevaPr
             {errores.nombre && <p className="text-red-400 text-xs mt-1">{errores.nombre}</p>}
           </div>
 
+          {/* Barrio */}
+          <div>
+            <label htmlFor="barrio" className="text-xs tracking-widest uppercase text-obsidian-500 dark:text-marble-400 mb-1.5 block">
+              Barrio <span className="text-gold-500">*</span>
+            </label>
+            <div className="relative">
+              <select
+                id="barrio"
+                value={form.barrio}
+                onChange={(e) => set('barrio')(e.target.value)}
+                className="w-full border border-marble-300 dark:border-white/10 bg-white dark:bg-obsidian-700/50 text-obsidian-700 dark:text-marble-300 px-3 py-2.5 text-sm focus:outline-none focus:border-gold-400 transition-colors duration-200 appearance-none cursor-pointer pr-9"
+              >
+                <option value="">Seleccionar barrio</option>
+                {BARRIOS.map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gold-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+            </div>
+            {errores.barrio && <p className="text-red-400 text-xs mt-1">{errores.barrio}</p>}
+          </div>
+
           {/* Campos que aparecen cuando hay tipo seleccionado */}
           {form.tipo && (
             <>
@@ -238,6 +273,25 @@ export function NuevaPropiedadModal({ open, onClose, tipoInicial = '' }: NuevaPr
                   </div>
                 </>
               )}
+              {/* Precio */}
+              <div>
+                <label htmlFor="precio" className="text-xs tracking-widest uppercase text-obsidian-500 dark:text-marble-400 mb-1.5 block">
+                  Precio (USD) <span className="text-gold-500">*</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-obsidian-400 dark:text-marble-400/60 text-sm select-none">$</span>
+                  <input
+                    id="precio"
+                    type="number"
+                    min="1"
+                    value={form.precio}
+                    onChange={(e) => set('precio')(e.target.value)}
+                    placeholder="Ej: 45000"
+                    className="w-full pl-7 pr-3 py-2.5 border border-marble-300 dark:border-white/10 bg-transparent text-obsidian-700 dark:text-marble-300 text-sm focus:outline-none focus:border-gold-400 transition-colors duration-200 placeholder:text-obsidian-300 dark:placeholder:text-marble-400/30"
+                  />
+                </div>
+                {errores.precio && <p className="text-red-400 text-xs mt-1">{errores.precio}</p>}
+              </div>
             </>
           )}
 
