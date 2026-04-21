@@ -27,18 +27,25 @@ describe('Navbar', () => {
 
   it('renderiza todos los links de navegación (al menos uno por cada sección)', () => {
     renderNavbar()
-    // Hay duplicados: desktop nav + mobile nav — verificamos que existan al menos uno de cada uno
-    const labels = ['Inicio', 'Barrios', 'Lotes', 'Casas', 'Nosotros', 'Contacto']
+    // Todos los destinos del dropdown de Propiedades + links directos
+    const labels = ['Inicio', 'Barrios', 'Lotes', 'Casas', 'Todas las propiedades', 'Nosotros', 'Contacto']
     labels.forEach((label) => {
-      expect(screen.getAllByRole('link', { name: label }).length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByRole('link', { name: new RegExp(label, 'i') }).length).toBeGreaterThanOrEqual(1)
     })
   })
 
-  it('el desktop nav tiene exactamente 6 links de sección', () => {
+  it('el botón de dropdown Propiedades existe en el nav', () => {
+    renderNavbar()
+    // Hay uno en desktop y otro en mobile — al menos uno debe existir
+    expect(screen.getAllByRole('button', { name: /propiedades/i }).length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('el desktop nav contiene los links del dropdown de propiedades', () => {
     renderNavbar()
     const desktopNav = document.querySelector('nav.hidden')!
     const links = desktopNav.querySelectorAll('a')
-    expect(links).toHaveLength(6)
+    // Inicio + 4 hijos del dropdown (Barrios, Lotes, Casas, Todas) + Nosotros + Contacto = 7
+    expect(links.length).toBe(7)
   })
 
   it('muestra el botón de toggle de tema', () => {
