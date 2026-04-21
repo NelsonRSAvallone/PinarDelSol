@@ -6,6 +6,63 @@ Sitio web para **Pinar Del Sol**, inmobiliaria y desarrolladora de propiedades. 
 
 ## Historial de cambios
 
+### [038f669] Modal "Creación de Propiedad" + filtro de precio + dropdown Propiedades en navbar
+**Fecha:** 21 de abril de 2026
+
+Múltiples features sobre las páginas de listado de propiedades.
+
+**Archivos creados:**
+- `src/app/components/NuevaPropiedadModal.tsx` — Modal de formulario con campos dinámicos según tipo:
+  - Campos comunes: Tipo (Lote/Casa), Nombre, Barrio, Precio USD.
+  - Solo Lote: Metros del lote.
+  - Solo Casa: Metros del lote + Metros cubiertos + Piezas (1–10) + Baños (1–10).
+  - Validación de obligatorios con mensajes de error inline. Cierra con Escape, click en backdrop o Cancelar.
+  - Barrio hardcodeado (marcado con TODO para conectar a base de datos).
+- `src/app/components/PrecioFilter.tsx` — Botón que despliega panel con inputs Desde/Hasta (USD). La filtración se ejecuta solo al presionar Aplicar. Muestra punto dorado indicador cuando el filtro está activo. Botón ✕ para limpiar.
+- `src/app/pages/PropiedadesPage.tsx` — Catálogo unificado de lotes y casas. Filtra por tipo (Todas/Lotes/Casas), barrio y rango de precio. Stats: total, lotes, casas, ubicación.
+
+**Archivos modificados:**
+- `src/app/components/Navbar.tsx` — Menú desplegable "Propiedades" (click) reemplaza los links individuales. Contiene: Barrios, Lotes, Casas, Todas las propiedades. Desktop: panel flotante con triángulo decorativo y cierre por click fuera. Mobile: sección expandible en el menú hamburguesa. El botón muestra subrayado dorado activo cuando la ruta actual es cualquiera de las 4 opciones.
+- `src/app/pages/LotesPage.tsx` — Agrega PrecioFilter, botón "Nueva Propiedad" (antes "Nuevo Lote") que abre el modal pre-seleccionando tipo Lote.
+- `src/app/pages/CasasPage.tsx` — Agrega PrecioFilter, botón "Nueva Propiedad" (antes "Nueva Casa") que abre el modal pre-seleccionando tipo Casa.
+- `src/App.tsx` — Agrega ruta `/propiedades`.
+- `src/tests/Navbar.test.tsx` — Tests actualizados para la nueva estructura del navbar con dropdown (36 tests en verde).
+
+**Datos hardcodeados en PropiedadesPage:**
+- Mismos 3 lotes de LotesPage + mismas 3 casas de CasasPage.
+
+---
+
+### [4815e8a] Páginas Lotes y Casas con filtro por barrio
+**Fecha:** 21 de abril de 2026
+
+**Archivos creados:**
+- `src/app/pages/LotesPage.tsx` — Listado de lotes con dropdown de filtro por barrio y botón admin.
+- `src/app/pages/CasasPage.tsx` — Listado de casas con dropdown de filtro por barrio y botón admin.
+- `src/app/components/LoteCard.tsx` — Card premium: número decorativo, badge de estado (disponible/reservado/vendido), superficie, precio USD, link "Ver lote".
+- `src/app/components/CasaCard.tsx` — Card premium: badge de estado (disponible/en construccion/vendido), iconos dormitorios/baños/superficie en fila, precio USD, link "Ver casa".
+
+**Archivos modificados:**
+- `src/App.tsx` — Rutas `/lotes` y `/casas`.
+- `src/app/components/Navbar.tsx` — Lotes y Casas cambiaron de anchors a rutas de página.
+
+**Datos hardcodeados:**
+
+| Tipo | Nombre | Barrio | Superficie | Precio | Estado |
+|---|---|---|---|---|---|
+| Lote | Lote 12 | Pinar 1 | 300 m² | $45.000 | disponible |
+| Lote | Lote 07 | Pinar 2 | 450 m² | $62.000 | disponible |
+| Lote | Lote 23 | Pinar 3 | 380 m² | $55.000 | reservado |
+| Casa | Roble | Pinar 1 | 120 m² / 3d 2b | $180.000 | disponible |
+| Casa | Cedro | Pinar 2 | 150 m² / 4d 2b | $220.000 | disponible |
+| Casa | Alerce | Pinar 3 | 180 m² / 4d 3b | $280.000 | en construcción |
+
+**Bugs corregidos:**
+- Navbar en modo claro sobre páginas sin hero oscuro mostraba texto blanco invisible. Corregido: texto blanco solo cuando `pathname === '/'` y sin scroll (carousel siempre oscuro). En otras páginas aplica colores según el tema.
+- Tests del Navbar actualizados para incluir `MemoryRouter` (requerido por `useLocation`).
+
+---
+
 ### [pendiente] Página de Barrios + React Router
 **Fecha:** 21 de abril de 2026
 
@@ -124,9 +181,10 @@ npm run lint       # linter
 ## Próximos pasos planeados
 
 - Página de detalle de barrio (`/barrios/:id`)
-- Sección de Lotes en venta por barrio
-- Sección de Casas y desarrollos propios
-- Página de detalle de propiedad
+- Página de detalle de propiedad (`/lotes/:id`, `/casas/:id`)
+- Conectar modal "Creación de Propiedad" a estado global / backend
+- Reemplazar barrios hardcodeados en el modal por fetch a base de datos
 - Formulario de contacto funcional
-- Sistema de autenticación para el panel de administrador
+- Sistema de autenticación para el panel de administrador (botones admin visibles solo para admins)
 - Base de datos PostgreSQL con Prisma
+- Conectar cards de lotes/casas/barrios con datos reales de la base de datos
