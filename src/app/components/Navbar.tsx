@@ -52,15 +52,17 @@ export function Navbar() {
     setMenuOpen(false)
   }, [location.pathname])
 
+  // En el home sin scroll el navbar flota sobre el carousel siempre oscuro → texto blanco.
+  // En cualquier otra página el fondo puede ser claro → colores según el tema.
+  const overDarkHero = location.pathname === '/' && !scrolled
+
   const linkClasses = (to: string) => {
     const isActive = location.pathname === to
-    // Cuando no hay scroll, el navbar es transparente sobre el carousel (siempre oscuro)
-    // → texto siempre blanco. Cuando hay scroll, se aplican colores según el tema.
     const textColor = isActive
       ? 'text-gold-500'
-      : scrolled
-        ? 'text-obsidian-600 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400'
-        : 'text-marble-100 hover:text-gold-400'
+      : overDarkHero
+        ? 'text-marble-100 hover:text-gold-400'
+        : 'text-obsidian-600 dark:text-marble-300 hover:text-gold-500 dark:hover:text-gold-400'
     return `text-sm tracking-wider uppercase transition-colors duration-300 relative group ${textColor}`
   }
 
@@ -81,7 +83,7 @@ export function Navbar() {
             <span className="text-gold-400 font-serif font-bold text-sm -rotate-45 group-hover:rotate-0 duration-500">PS</span>
           </div>
           <div className="flex flex-col leading-none">
-            <span className={`font-serif text-lg tracking-widest transition-colors duration-500 ${scrolled ? 'text-obsidian-900 dark:text-white' : 'text-white'}`}>
+            <span className={`font-serif text-lg tracking-widest transition-colors duration-500 ${overDarkHero ? 'text-white' : 'text-obsidian-900 dark:text-white'}`}>
               PINAR DEL SOL
             </span>
             <span className="text-gold-400 text-[10px] tracking-[0.3em] uppercase">Inmobiliaria & Desarrollos</span>
