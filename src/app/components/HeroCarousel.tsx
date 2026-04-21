@@ -189,10 +189,10 @@ export function HeroCarousel() {
         </div>
       )}
 
-      {/* Navigation arrows */}
+      {/* Flechas laterales — solo desktop */}
       <button
         onClick={prev_}
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 border border-white/20 hover:border-gold-400 flex items-center justify-center text-white/60 hover:text-gold-400 transition-all duration-300 backdrop-blur-sm bg-black/20 hover:bg-black/40"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 border border-white/20 hover:border-gold-400 hidden md:flex items-center justify-center text-white/60 hover:text-gold-400 transition-all duration-300 backdrop-blur-sm bg-black/20 hover:bg-black/40"
         aria-label="Anterior"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +201,7 @@ export function HeroCarousel() {
       </button>
       <button
         onClick={next}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 border border-white/20 hover:border-gold-400 flex items-center justify-center text-white/60 hover:text-gold-400 transition-all duration-300 backdrop-blur-sm bg-black/20 hover:bg-black/40"
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-12 h-12 border border-white/20 hover:border-gold-400 hidden md:flex items-center justify-center text-white/60 hover:text-gold-400 transition-all duration-300 backdrop-blur-sm bg-black/20 hover:bg-black/40"
         aria-label="Siguiente"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,8 +209,8 @@ export function HeroCarousel() {
         </svg>
       </button>
 
-      {/* Dots */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex gap-3">
+      {/* Dots — solo desktop */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 hidden md:flex gap-3">
         {slides.map((_, i) => (
           <button
             key={i}
@@ -223,6 +223,44 @@ export function HeroCarousel() {
             aria-label={`Ir a slide ${i + 1}`}
           />
         ))}
+      </div>
+
+      {/* Mobile: flechas + dots integrados en la barra inferior */}
+      <div className="absolute bottom-10 left-0 right-0 z-30 flex md:hidden items-center justify-center gap-5">
+        <button
+          onClick={prev_}
+          className="w-9 h-9 border border-white/20 flex items-center justify-center text-white/60 active:text-gold-400 active:border-gold-400 transition-colors duration-200"
+          aria-label="Anterior"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <div className="flex gap-3">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`transition-all duration-300 ${
+                i === current
+                  ? 'w-8 h-1 bg-gold-400'
+                  : 'w-4 h-1 bg-white/30'
+              }`}
+              aria-label={`Ir a slide ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        <button
+          onClick={next}
+          className="w-9 h-9 border border-white/20 flex items-center justify-center text-white/60 active:text-gold-400 active:border-gold-400 transition-colors duration-200"
+          aria-label="Siguiente"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
 
       {/* Slide counter */}

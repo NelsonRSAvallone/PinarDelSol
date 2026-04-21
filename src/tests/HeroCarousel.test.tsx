@@ -43,7 +43,7 @@ describe('HeroCarousel', () => {
     render(<HeroCarousel />)
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Siguiente' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Siguiente' })[0])
     })
 
     expect(headingText()).toMatch(/lotes premium/i)
@@ -53,11 +53,11 @@ describe('HeroCarousel', () => {
     render(<HeroCarousel />)
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Siguiente' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Siguiente' })[0])
     })
     await advanceTime(800)  // espera que termine la animación de 700ms
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Anterior' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Anterior' })[0])
     })
 
     expect(headingText()).toMatch(/barrios exclusivos/i)
@@ -67,7 +67,7 @@ describe('HeroCarousel', () => {
     render(<HeroCarousel />)
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Anterior' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Anterior' })[0])
     })
 
     expect(headingText()).toMatch(/tu inversión segura/i)
@@ -120,8 +120,9 @@ describe('HeroCarousel', () => {
 
   it('los dots de navegación tienen el aria-label correcto para los 4 slides', () => {
     render(<HeroCarousel />)
+    // Hay dos sets de dots (desktop + mobile) — verificamos que existan al menos uno de cada uno
     for (let i = 1; i <= 4; i++) {
-      expect(screen.getByRole('button', { name: `Ir a slide ${i}` })).toBeInTheDocument()
+      expect(screen.getAllByRole('button', { name: `Ir a slide ${i}` }).length).toBeGreaterThanOrEqual(1)
     }
   })
 
@@ -129,7 +130,7 @@ describe('HeroCarousel', () => {
     render(<HeroCarousel />)
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Ir a slide 3' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Ir a slide 3' })[0])
     })
 
     expect(headingText()).toMatch(/casas & desarrollos/i)
@@ -139,7 +140,7 @@ describe('HeroCarousel', () => {
     render(<HeroCarousel />)
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Ir a slide 4' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Ir a slide 4' })[0])
     })
 
     expect(headingText()).toMatch(/tu inversión segura/i)
@@ -150,8 +151,8 @@ describe('HeroCarousel', () => {
 
     // Dos clicks rápidos — el segundo debe ignorarse porque la animación sigue
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Siguiente' }))
-      fireEvent.click(screen.getByRole('button', { name: 'Siguiente' }))
+      fireEvent.click(screen.getAllByRole('button', { name: 'Siguiente' })[0])
+      fireEvent.click(screen.getAllByRole('button', { name: 'Siguiente' })[0])
     })
 
     expect(headingText()).toMatch(/lotes premium/i)
